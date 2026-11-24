@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "source": {},
+  "resolved": {
+    "account_id": "6f0bba1c68fc5fe3e45dd351b8e8a1dd",
+    "name": "void-test",
+    "hyperdrive": [
+      {
+        "binding": "HYPERDRIVE",
+        "id": "a762422f816e475490ef538f5eec3d82"
+      }
+    ]
+  },
+  "text": "{\n  \"account_id\": \"6f0bba1c68fc5fe3e45dd351b8e8a1dd\",\n  \"name\": \"void-test\",\n  \"hyperdrive\": [\n    {\n      \"binding\": \"HYPERDRIVE\",\n      \"id\": \"a762422f816e475490ef538f5eec3d82\"\n    }\n  ]\n}\n"
+}

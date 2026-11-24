@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1795521280577,
+      "tag": "20261124115440_square_princess_powerful",
+      "breakpoints": true
+    }
+  ]
+}

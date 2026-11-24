@@ -1,0 +1,23 @@
+{
+  "name": "void-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview",
+    "postinstall": "void prepare"
+  },
+  "dependencies": {
+    "hono": "^4.11.9",
+    "solid-js": "^1.9.11",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "void": "1.10.0",
+    "vite": "catalog:",
+    "typescript": "^7.0.2",
+    "vite-plus": "catalog:",
+    "@void/solid": "1.10.0"
+  }
+}
