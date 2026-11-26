@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "D:\\project\\void-test\\.archify\\architecture-mahjong-20261126-152406\\candidate.json",
+    "sha256": "a56f4e22466ef57dec8d5aaee27c99f30d10e4bd294658c5bc6bf209fbe3efe2",
+    "bytes": 10325
+  },
+  "artifact": {
+    "path": "D:\\project\\void-test\\.archify\\architecture-mahjong-20261126-152406\\mahjong.html",
+    "sha256": "19b1b7f773195473f626491d2465f55e755cc93dc3ce7ac0db8b4d13a7cb416a",
+    "bytes": 857967
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "D:\\project\\void-test\\.archify\\architecture-mahjong-20261126-152406\\organization-verified\\mahjong.finalize.json",
+    "summaryReceipt": "D:\\project\\void-test\\.archify\\architecture-mahjong-20261126-152406\\organization-verified\\mahjong.finalize-summary.json",
+    "browserCheckReceipt": "D:\\project\\void-test\\.archify\\architecture-mahjong-20261126-152406\\organization-verified\\mahjong.browser-check.json"
+  },
+  "update": {
+    "status": "update_available",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.3.1",
+    "releaseNotes": "https://github.com/tt-a1i/archify/releases/tag/v3.3.1",
+    "severity": "normal",
+    "summary": "Polishes automatic Architecture layout, spine labels, crossing reduction, and Classic styling, and deduplicates cited Explainer files.",
+    "checkedAt": "2026-11-26T07:25:05.738Z",
+    "source": "cache",
+    "noticeRequired": true,
+    "noticeText": "Archify update: 3.2.0 → 3.3.1. A previous check at 2026-11-26T07:25:05.738Z found a newer release. Release notes: https://github.com/tt-a1i/archify/releases/tag/v3.3.1. Would you like me to update Archify?",
+    "eventKey": "archify@sha256:b92b4d55446966fd74e5338a45d6de9a7a1b194420cd5eb14d2cdc39f1053b80"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 5200,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  },
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "routesOverSuggestedBends": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [],
+      "detours": [
+        {
+          "relationship": {
+            "id": "socket-in",
+            "from": "browser",
+            "to": "object",
+            "label": "WebSocket 动作",
+            "collectionIndex": 2,
+            "artifactIndex": 3
+          },
+          "bends": 3,
+          "stretch": 1.226
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "browser → object needs 3 bends: move node browser or object so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

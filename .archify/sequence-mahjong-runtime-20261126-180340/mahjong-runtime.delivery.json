@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ccf0aa44-a88c-4da7-a3bd-3eeebd363269",
+  "status": "current",
+  "command": "deliver",
+  "type": "sequence",
+  "input": "D:\\project\\void-test\\.archify\\sequence-mahjong-runtime-20261126-180340\\candidate.json",
+  "output": "D:\\project\\void-test\\.archify\\sequence-mahjong-runtime-20261126-180340\\mahjong-runtime.html",
+  "specification": {
+    "sha256": "ea296ac974741adc4d72d236402aa33971f980a9f4701d52c1932faf051853fe",
+    "bytes": 17040
+  },
+  "artifact": {
+    "sha256": "52ac42dedb743da907283980db0292796ad04b2b30d48afc90651dd4e5964908",
+    "bytes": 881323
+  }
+}

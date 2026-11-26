@@ -1,0 +1,710 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "四方牌桌 · 源码调用链",
+    "subtitle": "按时间向下阅读。每条横线标出请求、方法、回调或返回值。",
+    "output": ".archify/sequence-mahjong-runtime-20261126-180340/mahjong-runtime.html",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "git@xh:xlj-hly/void-test.git",
+      "revision": "15b0df5c5e5c8d2eb72f3c420e6ad443d98aa221",
+      "link_mode": "local-only"
+    }
+  },
+  "participants": [
+    {
+      "id": "browser",
+      "type": "frontend",
+      "label": "mahjong.tsx",
+      "sublabel": "大厅 / 牌桌",
+      "sources": [
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 48,
+          "end_line": 87
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 90,
+          "end_line": 125
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 136,
+          "end_line": 187
+        }
+      ]
+    },
+    {
+      "id": "routes",
+      "type": "cloud",
+      "label": "Void 路由",
+      "sublabel": "Loader / rooms",
+      "sources": [
+        {
+          "path": "pages/index.server.ts",
+          "line": 5,
+          "end_line": 11
+        },
+        {
+          "path": "pages/games/mahjong.server.ts",
+          "line": 5,
+          "end_line": 16
+        },
+        {
+          "path": "routes/api/rooms/index.ts",
+          "line": 6,
+          "end_line": 24
+        }
+      ]
+    },
+    {
+      "id": "object",
+      "type": "backend",
+      "label": "room-object.ts",
+      "sublabel": "RoomObject",
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 14,
+          "end_line": 53
+        },
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 55,
+          "end_line": 96
+        },
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 105,
+          "end_line": 125
+        }
+      ]
+    },
+    {
+      "id": "adapter",
+      "type": "backend",
+      "label": "接入方法",
+      "sublabel": "game-adapter.ts",
+      "sources": [
+        {
+          "path": "src/room/game-adapter.ts",
+          "line": 26,
+          "end_line": 50
+        },
+        {
+          "path": "src/game-registry.ts",
+          "line": 1,
+          "end_line": 14
+        },
+        {
+          "path": "src/mahjong/room-adapter.ts",
+          "line": 5,
+          "end_line": 18
+        }
+      ]
+    },
+    {
+      "id": "room",
+      "type": "backend",
+      "label": "session.ts",
+      "sublabel": "Room",
+      "sources": [
+        {
+          "path": "src/room/session.ts",
+          "line": 39,
+          "end_line": 80
+        },
+        {
+          "path": "src/room/session.ts",
+          "line": 83,
+          "end_line": 108
+        },
+        {
+          "path": "src/room/session.ts",
+          "line": 110,
+          "end_line": 140
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "type": "database",
+      "label": "DO 存储",
+      "sublabel": "Cloudflare Alarm",
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 14,
+          "end_line": 33
+        },
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 105,
+          "end_line": 108
+        }
+      ]
+    },
+    {
+      "id": "engine",
+      "type": "backend",
+      "label": "engine.ts",
+      "sublabel": "麻将引擎",
+      "sources": [
+        {
+          "path": "src/mahjong/engine.ts",
+          "line": 6,
+          "end_line": 36
+        }
+      ]
+    },
+    {
+      "id": "registry",
+      "type": "backend",
+      "label": "registry.ts",
+      "sublabel": "麻将玩法表",
+      "sources": [
+        {
+          "path": "src/mahjong/rules/registry.ts",
+          "line": 6,
+          "end_line": 29
+        }
+      ]
+    },
+    {
+      "id": "rule",
+      "type": "backend",
+      "label": "rules/*.ts",
+      "sublabel": "基础 / 川 / 粤",
+      "sources": [
+        {
+          "path": "src/mahjong/rules/basic.ts",
+          "line": 141,
+          "end_line": 194
+        },
+        {
+          "path": "src/mahjong/rules/sichuan.ts",
+          "line": 134,
+          "end_line": 185
+        },
+        {
+          "path": "src/mahjong/rules/guangdong.ts",
+          "line": 46,
+          "end_line": 68
+        }
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "from": 150,
+      "to": 420,
+      "label": "00 · 首页选游戏，大厅选玩法"
+    },
+    {
+      "from": 438,
+      "to": 1278,
+      "label": "01 · 建房与入座"
+    },
+    {
+      "from": 1306,
+      "to": 1863,
+      "label": "02 · WebSocket 握手与恢复座位"
+    },
+    {
+      "from": 1891,
+      "to": 2361,
+      "label": "03 · 开局或出牌"
+    },
+    {
+      "from": 2389,
+      "to": 2995,
+      "label": "04 · 将成功更新保存并推送"
+    },
+    {
+      "from": 3023,
+      "to": 3319,
+      "label": "05 · Alarm 到期推进"
+    }
+  ],
+  "messages": [
+    {
+      "id": "home-request",
+      "from": "browser",
+      "to": "routes",
+      "y": 180,
+      "label": "GET / → 首页 loader()",
+      "variant": "emphasis"
+    },
+    {
+      "id": "home-catalog",
+      "from": "routes",
+      "to": "adapter",
+      "y": 214,
+      "label": "从 roomGames 读取游戏目录",
+      "variant": "default"
+    },
+    {
+      "id": "home-response",
+      "from": "routes",
+      "to": "browser",
+      "y": 248,
+      "label": "渲染游戏首页",
+      "variant": "return"
+    },
+    {
+      "id": "game-choice",
+      "from": "browser",
+      "to": "routes",
+      "y": 282,
+      "label": "点击麻将 → GET /games/mahjong",
+      "variant": "emphasis"
+    },
+    {
+      "id": "rules-catalog",
+      "from": "routes",
+      "to": "registry",
+      "y": 316,
+      "label": "rulesets.catalog()",
+      "variant": "default"
+    },
+    {
+      "id": "room-form",
+      "from": "browser",
+      "to": "routes",
+      "y": 350,
+      "label": "点击卡片 → GET ?ruleset=…",
+      "variant": "emphasis"
+    },
+    {
+      "id": "form-response",
+      "from": "routes",
+      "to": "browser",
+      "y": 384,
+      "label": "loader() 返回所选玩法，渲染入房表单",
+      "variant": "return"
+    },
+    {
+      "id": "create-http",
+      "from": "browser",
+      "to": "routes",
+      "y": 468,
+      "label": "enter(false) → POST /api/rooms",
+      "variant": "emphasis"
+    },
+    {
+      "id": "create-rpc",
+      "from": "routes",
+      "to": "object",
+      "y": 540,
+      "label": "GameRoom.get(id).create(…)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "pick-game",
+      "from": "object",
+      "to": "adapter",
+      "y": 574,
+      "label": "open('mahjong')",
+      "variant": "emphasis",
+      "note": "roomGames.get(gameType) 选中 mahjongRoomGame"
+    },
+    {
+      "id": "new-room",
+      "from": "adapter",
+      "to": "room",
+      "y": 661,
+      "label": "defineRoomGame() → new Room(…)",
+      "variant": "emphasis",
+      "note": "注入 createMahjongEngine()、存储、时钟和推送回调"
+    },
+    {
+      "id": "create-room",
+      "from": "object",
+      "to": "room",
+      "y": 748,
+      "label": "session.room.create(…)",
+      "variant": "default"
+    },
+    {
+      "id": "read-conflict",
+      "from": "room",
+      "to": "object",
+      "y": 782,
+      "label": "store.load() 检查建房冲突",
+      "variant": "default"
+    },
+    {
+      "id": "configure",
+      "from": "room",
+      "to": "engine",
+      "y": 816,
+      "label": "configure(selection)",
+      "variant": "emphasis",
+      "note": "校验玩法并确定版本"
+    },
+    {
+      "id": "current-version",
+      "from": "engine",
+      "to": "registry",
+      "y": 910,
+      "label": "getCurrent(id) 或 defaultRule",
+      "variant": "default"
+    },
+    {
+      "id": "save-create",
+      "from": "room",
+      "to": "object",
+      "y": 944,
+      "label": "store.save(record, null)",
+      "variant": "default",
+      "note": "先保存玩法 ID、版本与房主"
+    },
+    {
+      "id": "write-create",
+      "from": "object",
+      "to": "storage",
+      "y": 1031,
+      "label": "transaction() 写入 room 与 game-type",
+      "variant": "default"
+    },
+    {
+      "id": "membership",
+      "from": "routes",
+      "to": "browser",
+      "y": 1065,
+      "label": "返回 { roomId, token }",
+      "variant": "return"
+    },
+    {
+      "id": "join-http",
+      "from": "browser",
+      "to": "routes",
+      "y": 1099,
+      "label": "enter(true) → POST …/join",
+      "variant": "emphasis"
+    },
+    {
+      "id": "join-rpc",
+      "from": "routes",
+      "to": "object",
+      "y": 1133,
+      "label": "GameRoom.get(id).join(name, token)",
+      "variant": "default"
+    },
+    {
+      "id": "join-room",
+      "from": "object",
+      "to": "room",
+      "y": 1167,
+      "label": "session.room.join(name, token)",
+      "variant": "default",
+      "note": "校验容量和开局状态，调用 commit() 保存新座位"
+    },
+    {
+      "id": "join-membership",
+      "from": "routes",
+      "to": "browser",
+      "y": 1254,
+      "label": "返回访客 { roomId, token }",
+      "variant": "return"
+    },
+    {
+      "id": "upgrade-http",
+      "from": "browser",
+      "to": "routes",
+      "y": 1336,
+      "label": "new WebSocket() → GET …/socket",
+      "variant": "emphasis"
+    },
+    {
+      "id": "upgrade-rpc",
+      "from": "routes",
+      "to": "object",
+      "y": 1370,
+      "label": "GameRoom.get(id).fetch(request)",
+      "variant": "security",
+      "note": "路由校验 Upgrade 和 Origin"
+    },
+    {
+      "id": "upgrade-return",
+      "from": "object",
+      "to": "browser",
+      "y": 1457,
+      "label": "HTTP 101，经路由返回",
+      "variant": "return",
+      "note": "RoomObject.fetch() 用 acceptWebSocket() 接管连接"
+    },
+    {
+      "id": "resume-send",
+      "from": "browser",
+      "to": "object",
+      "y": 1544,
+      "label": "onopen → resume(token)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "resume-decode",
+      "from": "object",
+      "to": "adapter",
+      "y": 1578,
+      "label": "restoreRoom() → decodeMessage(raw)",
+      "variant": "default",
+      "note": "DO 唤醒时读回游戏类型，按需重建会话"
+    },
+    {
+      "id": "resume-room",
+      "from": "object",
+      "to": "room",
+      "y": 1665,
+      "label": "session.room.resume(token, callback)",
+      "variant": "security",
+      "note": "验证凭证，推进已有牌局的到期状态，再生成座位视图"
+    },
+    {
+      "id": "resume-view",
+      "from": "room",
+      "to": "engine",
+      "y": 1752,
+      "label": "viewFor(config, game, seat)",
+      "variant": "default"
+    },
+    {
+      "id": "initial-snapshot",
+      "from": "object",
+      "to": "browser",
+      "y": 1786,
+      "label": "snapshot(view, events: [])",
+      "variant": "return",
+      "note": "在回调内绑定 seat，再发送该座位的视图"
+    },
+    {
+      "id": "act-send",
+      "from": "browser",
+      "to": "object",
+      "y": 1921,
+      "label": "send() → start / act",
+      "variant": "emphasis",
+      "note": "点牌由 Board.onAction() 进入 send(action)"
+    },
+    {
+      "id": "act-decode",
+      "from": "object",
+      "to": "adapter",
+      "y": 2008,
+      "label": "webSocketMessage() → decodeMessage(raw)",
+      "variant": "emphasis",
+      "note": "麻将接入层校验消息，将 act 转成 move"
+    },
+    {
+      "id": "run-act",
+      "from": "adapter",
+      "to": "room",
+      "y": 2095,
+      "label": "run(seat) → Room.command(seat, command)",
+      "variant": "emphasis",
+      "note": "DO 从连接读 seat 后调用 run，Room 处理房主权限和去重"
+    },
+    {
+      "id": "act-engine",
+      "from": "room",
+      "to": "engine",
+      "y": 2182,
+      "label": "engine.start(…) 或 engine.apply(…)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "resolve-rule",
+      "from": "engine",
+      "to": "registry",
+      "y": 2216,
+      "label": "resolve() → get(rulesetId, version)",
+      "variant": "default"
+    },
+    {
+      "id": "rule-apply",
+      "from": "engine",
+      "to": "rule",
+      "y": 2250,
+      "label": "rules.start(…) 或 rules.apply(…)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "state-update",
+      "from": "engine",
+      "to": "room",
+      "y": 2284,
+      "label": "返回状态更新与事件",
+      "variant": "return",
+      "note": "成功才进入 commit()，非法命令返回 error"
+    },
+    {
+      "id": "next-deadline",
+      "from": "room",
+      "to": "engine",
+      "y": 2419,
+      "label": "commit() → engine.deadline(…)",
+      "variant": "default"
+    },
+    {
+      "id": "save-commit",
+      "from": "room",
+      "to": "object",
+      "y": 2453,
+      "label": "await store.save(record, deadline)",
+      "variant": "emphasis",
+      "note": "存储回调在 RoomObject.open() 注入"
+    },
+    {
+      "id": "store-commit",
+      "from": "object",
+      "to": "storage",
+      "y": 2540,
+      "label": "transaction() 写入状态和 Alarm",
+      "variant": "emphasis"
+    },
+    {
+      "id": "transaction-done",
+      "from": "storage",
+      "to": "room",
+      "y": 2574,
+      "label": "持久化完成，经存储回调返回",
+      "variant": "return"
+    },
+    {
+      "id": "publish-call",
+      "from": "room",
+      "to": "adapter",
+      "y": 2608,
+      "label": "publish(record, events)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "publish-seat",
+      "from": "adapter",
+      "to": "object",
+      "y": 2642,
+      "label": "runtime.publish(snapshotFor)",
+      "variant": "emphasis",
+      "note": "RoomObject 为每条已入座连接调用 snapshotFor(seat)"
+    },
+    {
+      "id": "project-seat",
+      "from": "adapter",
+      "to": "room",
+      "y": 2729,
+      "label": "Room.viewFor(record, seat)",
+      "variant": "default"
+    },
+    {
+      "id": "project-engine",
+      "from": "room",
+      "to": "engine",
+      "y": 2763,
+      "label": "engine.viewFor(config, game, seat)",
+      "variant": "default"
+    },
+    {
+      "id": "project-rule",
+      "from": "engine",
+      "to": "rule",
+      "y": 2797,
+      "label": "rules.viewFor(state, seat)",
+      "variant": "default"
+    },
+    {
+      "id": "send-snapshot",
+      "from": "object",
+      "to": "browser",
+      "y": 2831,
+      "label": "send(socket, snapshot)",
+      "variant": "return",
+      "note": "index.tsx 收到 snapshot 后更新 Board 的输入"
+    },
+    {
+      "id": "send-ack",
+      "from": "object",
+      "to": "browser",
+      "y": 2918,
+      "label": "send(socket, ack)",
+      "variant": "return",
+      "note": "仅对发起命令的连接发送"
+    },
+    {
+      "id": "alarm",
+      "from": "storage",
+      "to": "object",
+      "y": 3053,
+      "label": "Cloudflare Alarm → alarm()",
+      "variant": "dashed"
+    },
+    {
+      "id": "tick",
+      "from": "object",
+      "to": "room",
+      "y": 3087,
+      "label": "restoreRoom() → Room.tick()",
+      "variant": "emphasis",
+      "note": "Room.advanceTime() 先检查有无到期"
+    },
+    {
+      "id": "timeout",
+      "from": "room",
+      "to": "engine",
+      "y": 3174,
+      "label": "engine.apply(…, { timeout: true })",
+      "variant": "emphasis"
+    },
+    {
+      "id": "timeout-rule",
+      "from": "engine",
+      "to": "rule",
+      "y": 3208,
+      "label": "rules.apply(…, { timeout: true })",
+      "variant": "default"
+    },
+    {
+      "id": "timeout-commit",
+      "from": "engine",
+      "to": "room",
+      "y": 3242,
+      "label": "返回状态与事件 → commit()",
+      "variant": "return",
+      "note": "复用保存和推送路径。没有发起命令的连接"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "orange",
+      "title": "文件入口",
+      "items": [
+        "pages/index.tsx 渲染首页，pages/games/mahjong.tsx 处理玩法选择、建房、入座和快照。",
+        "接入泳道包含 src/game-registry.ts、src/room/game-adapter.ts 和 src/mahjong/room-adapter.ts。"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "两层选择",
+      "items": [
+        "建房按请求的游戏类型查接入表。加入、消息和 Alarm 用 restoreRoom() 恢复会话。麻将引擎用保存的 ID 和版本取规则。",
+        "浏览器建房提交 gameType 与 rulesetId。邀请链接携带 room，直接打开加入表单。"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "同一提交路径",
+      "items": [
+        "加入、成功开局、成功动作与到期推进共用 Room.commit()。建房直接保存初始记录。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "阅读范围",
+      "items": [
+        "依据当前工作区源码。图按成功主路径展示，省略部分中间返回及错误分支。"
+      ]
+    }
+  ]
+}

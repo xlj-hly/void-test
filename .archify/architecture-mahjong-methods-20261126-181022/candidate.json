@@ -1,0 +1,504 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "四方牌桌 · 文件与方法调用图",
+    "subtitle": "从浏览器入口沿箭头追踪联机调用、规则分派与快照回推。",
+    "locale": "zh-CN",
+    "output": ".archify/architecture-mahjong-methods-20261126-181022/mahjong-methods.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "git@xh:xlj-hly/void-test.git",
+      "revision": "15b0df5c5e5c8d2eb72f3c420e6ad443d98aa221",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "enter",
+      "type": "frontend",
+      "label": "enter() / connect()",
+      "sublabel": "pages/games/mahjong.tsx",
+      "pos": [
+        36,
+        38
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 48,
+          "end_line": 61
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 90,
+          "end_line": 111
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 136,
+          "end_line": 169
+        }
+      ]
+    },
+    {
+      "id": "route",
+      "type": "cloud",
+      "label": "POST / GET socket",
+      "sublabel": "rooms/index.ts · join.ts · socket.ts",
+      "pos": [
+        338,
+        38
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "routes/api/rooms/index.ts",
+          "line": 6,
+          "end_line": 24
+        },
+        {
+          "path": "routes/api/rooms/[roomId]/join.ts",
+          "line": 6,
+          "end_line": 13
+        },
+        {
+          "path": "routes/api/rooms/[roomId]/socket.ts",
+          "line": 6,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "id": "rpc",
+      "type": "backend",
+      "label": "create() / join() / fetch()",
+      "sublabel": "durable-objects/room-object.ts",
+      "pos": [
+        641,
+        38
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 39,
+          "end_line": 62
+        },
+        {
+          "path": "src/room/session.ts",
+          "line": 45,
+          "end_line": 67
+        }
+      ]
+    },
+    {
+      "id": "select",
+      "type": "backend",
+      "label": "open() / restoreRoom()",
+      "sublabel": "room-object.ts · game-registry.ts",
+      "pos": [
+        954,
+        38
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 14,
+          "end_line": 36
+        },
+        {
+          "path": "src/game-registry.ts",
+          "line": 1,
+          "end_line": 14
+        },
+        {
+          "path": "src/room/game-adapter.ts",
+          "line": 26,
+          "end_line": 38
+        }
+      ]
+    },
+    {
+      "id": "send",
+      "type": "frontend",
+      "label": "Board.onAction() → send()",
+      "sublabel": "board.tsx · mahjong.tsx",
+      "pos": [
+        36,
+        205
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/mahjong/client/board.tsx",
+          "line": 87,
+          "end_line": 101
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 114,
+          "end_line": 125
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 179,
+          "end_line": 187
+        }
+      ]
+    },
+    {
+      "id": "ws",
+      "type": "backend",
+      "label": "webSocketMessage()",
+      "sublabel": "durable-objects/room-object.ts",
+      "pos": [
+        338,
+        205
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 65,
+          "end_line": 96
+        }
+      ]
+    },
+    {
+      "id": "decode",
+      "type": "backend",
+      "label": "decodeMessage() → run()",
+      "sublabel": "game-adapter.ts · room-adapter.ts",
+      "pos": [
+        641,
+        205
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/room/game-adapter.ts",
+          "line": 39,
+          "end_line": 47
+        },
+        {
+          "path": "src/mahjong/room-adapter.ts",
+          "line": 7,
+          "end_line": 18
+        }
+      ]
+    },
+    {
+      "id": "command",
+      "type": "backend",
+      "label": "Room.command()",
+      "sublabel": "src/room/session.ts",
+      "pos": [
+        954,
+        205
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/room/session.ts",
+          "line": 83,
+          "end_line": 108
+        }
+      ]
+    },
+    {
+      "id": "receive",
+      "type": "frontend",
+      "label": "onmessage → setView()",
+      "sublabel": "pages/games/mahjong.tsx",
+      "pos": [
+        36,
+        405
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 61,
+          "end_line": 71
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 179,
+          "end_line": 187
+        }
+      ]
+    },
+    {
+      "id": "publish",
+      "type": "backend",
+      "label": "publish(snapshotFor)",
+      "sublabel": "room-object.ts · game-adapter.ts",
+      "pos": [
+        338,
+        405
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 110,
+          "end_line": 121
+        },
+        {
+          "path": "src/room/game-adapter.ts",
+          "line": 31,
+          "end_line": 36
+        },
+        {
+          "path": "src/room/session.ts",
+          "line": 134,
+          "end_line": 140
+        }
+      ]
+    },
+    {
+      "id": "commit",
+      "type": "backend",
+      "label": "Room.commit()",
+      "sublabel": "src/room/session.ts",
+      "pos": [
+        641,
+        405
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/room/session.ts",
+          "line": 100,
+          "end_line": 106
+        },
+        {
+          "path": "src/room/session.ts",
+          "line": 117,
+          "end_line": 132
+        }
+      ]
+    },
+    {
+      "id": "engine",
+      "type": "backend",
+      "label": "engine.start() / apply()",
+      "sublabel": "src/mahjong/engine.ts",
+      "pos": [
+        954,
+        405
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/mahjong/engine.ts",
+          "line": 10,
+          "end_line": 34
+        }
+      ]
+    },
+    {
+      "id": "save",
+      "type": "database",
+      "label": "storage.transaction()",
+      "sublabel": "room-object.ts · Cloudflare",
+      "pos": [
+        641,
+        575
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 14,
+          "end_line": 25
+        }
+      ]
+    },
+    {
+      "id": "rules",
+      "type": "backend",
+      "label": "registry.get() → Rules",
+      "sublabel": "rules/registry.ts · 各玩法文件",
+      "pos": [
+        954,
+        575
+      ],
+      "size": [
+        216,
+        64
+      ],
+      "sources": [
+        {
+          "path": "src/mahjong/engine.ts",
+          "line": 10,
+          "end_line": 33
+        },
+        {
+          "path": "src/mahjong/rules/registry.ts",
+          "line": 19,
+          "end_line": 29
+        },
+        {
+          "path": "src/mahjong/rules/sichuan.ts",
+          "line": 134,
+          "end_line": 185
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "http",
+      "from": "enter",
+      "to": "route",
+      "label": "HTTP",
+      "variant": "emphasis"
+    },
+    {
+      "id": "stub",
+      "from": "route",
+      "to": "rpc",
+      "label": "DO stub",
+      "variant": "emphasis"
+    },
+    {
+      "id": "attach",
+      "from": "rpc",
+      "to": "select",
+      "label": "装配 / 恢复"
+    },
+    {
+      "id": "message",
+      "from": "send",
+      "to": "ws",
+      "label": "WebSocket",
+      "variant": "emphasis"
+    },
+    {
+      "id": "parse",
+      "from": "ws",
+      "to": "decode",
+      "label": "JSON",
+      "variant": "emphasis"
+    },
+    {
+      "id": "dispatch",
+      "from": "decode",
+      "to": "command",
+      "label": "run(seat)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "start-or-act",
+      "from": "command",
+      "to": "engine",
+      "label": "开局或执行动作",
+      "variant": "emphasis"
+    },
+    {
+      "id": "accept",
+      "from": "command",
+      "to": "commit",
+      "label": "裁决成功后",
+      "variant": "emphasis"
+    },
+    {
+      "id": "choose-rule",
+      "from": "engine",
+      "to": "rules",
+      "label": "按 ID 和版本取规则",
+      "variant": "emphasis"
+    },
+    {
+      "id": "persist",
+      "from": "commit",
+      "to": "save",
+      "label": "先保存状态与 Alarm",
+      "variant": "emphasis"
+    },
+    {
+      "id": "project",
+      "from": "commit",
+      "to": "publish",
+      "label": "保存后回调",
+      "variant": "emphasis"
+    },
+    {
+      "id": "snapshot",
+      "from": "publish",
+      "to": "receive",
+      "label": "席位快照",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "建房与恢复",
+      "items": [
+        "pages/index.server.ts 从游戏注册表取游戏目录。进入 /games/mahjong 后，mahjong.server.ts 从玩法注册表取卡片。",
+        "RoomObject.create() 按请求装配游戏，直接调用 Room.create() 检查持久化冲突并确定玩法版本。",
+        "join() 恢复会话后调用 Room.join()。收到 resume 后，Room.resume() 校验凭证，DO 绑定座位。"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "快照与确认",
+      "items": [
+        "snapshotFor(seat) 经 Room.viewFor()、engine.viewFor() 和 rules.viewFor() 生成视图。",
+        "Room.command() 完成保存和推送后返回 ack，由 webSocketMessage() 发给发起者。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Alarm 超时入口",
+      "items": [
+        "RoomObject.alarm() → restoreRoom() → Room.tick() → advanceTime()。",
+        "到期时调用 engine.apply({ timeout: true })，随后沿 Room.commit() 路径保存并推送。"
+      ]
+    }
+  ]
+}

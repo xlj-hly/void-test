@@ -5,6 +5,10 @@ export default defineConfig({
   "routing": {
     "typedRoutes": true
   },
+  "head": {
+    "title": "四方牌桌",
+    "link": [{ "rel": "icon", "type": "image/svg+xml", "href": "/icon.svg" }]
+  },
   "database": "pg",
   "worker": {
     "compatibility_date": "2026-02-24"

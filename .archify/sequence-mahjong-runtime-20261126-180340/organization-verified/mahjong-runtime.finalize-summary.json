@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "sequence",
+  "quality": "showcase",
+  "specification": {
+    "path": "D:\\project\\void-test\\.archify\\sequence-mahjong-runtime-20261126-180340\\candidate.json",
+    "sha256": "ea296ac974741adc4d72d236402aa33971f980a9f4701d52c1932faf051853fe",
+    "bytes": 17040
+  },
+  "artifact": {
+    "path": "D:\\project\\void-test\\.archify\\sequence-mahjong-runtime-20261126-180340\\mahjong-runtime.html",
+    "sha256": "52ac42dedb743da907283980db0292796ad04b2b30d48afc90651dd4e5964908",
+    "bytes": 881323
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "D:\\project\\void-test\\.archify\\sequence-mahjong-runtime-20261126-180340\\organization-verified\\mahjong-runtime.finalize.json",
+    "summaryReceipt": "D:\\project\\void-test\\.archify\\sequence-mahjong-runtime-20261126-180340\\organization-verified\\mahjong-runtime.finalize-summary.json",
+    "browserCheckReceipt": "D:\\project\\void-test\\.archify\\sequence-mahjong-runtime-20261126-180340\\organization-verified\\mahjong-runtime.browser-check.json"
+  },
+  "update": {
+    "status": "update_available",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.3.1",
+    "releaseNotes": "https://github.com/tt-a1i/archify/releases/tag/v3.3.1",
+    "severity": "normal",
+    "summary": "Polishes automatic Architecture layout, spine labels, crossing reduction, and Classic styling, and deduplicates cited Explainer files.",
+    "checkedAt": "2026-11-26T07:25:05.738Z",
+    "source": "cache",
+    "noticeRequired": true,
+    "noticeText": "Archify update: 3.2.0 → 3.3.1. A previous check at 2026-11-26T07:25:05.738Z found a newer release. Release notes: https://github.com/tt-a1i/archify/releases/tag/v3.3.1. Would you like me to update Archify?",
+    "eventKey": "archify@sha256:b92b4d55446966fd74e5338a45d6de9a7a1b194420cd5eb14d2cdc39f1053b80"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 6945,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  }
+}

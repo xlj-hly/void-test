@@ -1,5 +1,6 @@
 node_modules
 dist
+coverage
 .void
 .wrangler
 .cloudflare
@@ -8,3 +9,4 @@ dist
 .env.*
 *.tsbuildinfo
 .DS_Store
+.vitest/

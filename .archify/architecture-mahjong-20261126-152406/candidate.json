@@ -1,0 +1,495 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "四方牌桌 · 系统架构",
+    "subtitle": "共用 RoomObject 按已保存的游戏类型注入引擎和消息协议。",
+    "output": ".archify/architecture-mahjong-20261126-152406/mahjong.html",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "git@xh:xlj-hly/void-test.git",
+      "revision": "15b0df5c5e5c8d2eb72f3c420e6ad443d98aa221",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "frontend",
+      "label": "麻将大厅与牌桌",
+      "sublabel": "玩法卡片、入房表单与 2D 牌桌",
+      "pos": [
+        32,
+        173
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 90,
+          "end_line": 111
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 136,
+          "end_line": 169
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 171,
+          "end_line": 187
+        }
+      ]
+    },
+    {
+      "id": "routes",
+      "type": "cloud",
+      "label": "Void 路由与 Loader",
+      "sublabel": "HTTP 入参与 WebSocket 握手",
+      "pos": [
+        32,
+        38
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "routes/api/rooms/index.ts",
+          "line": 6,
+          "end_line": 24
+        },
+        {
+          "path": "routes/api/rooms/[roomId]/socket.ts",
+          "line": 6,
+          "end_line": 17
+        },
+        {
+          "path": "pages/games/mahjong.server.ts",
+          "line": 5,
+          "end_line": 16
+        }
+      ]
+    },
+    {
+      "id": "object",
+      "type": "cloud",
+      "label": "通用 RoomObject",
+      "sublabel": "连接、座位绑定、游戏类型恢复",
+      "pos": [
+        328,
+        173
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 11,
+          "end_line": 53
+        },
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 65,
+          "end_line": 95
+        },
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 105,
+          "end_line": 125
+        }
+      ]
+    },
+    {
+      "id": "store",
+      "type": "database",
+      "label": "DO 存储与 Alarm",
+      "sublabel": "游戏类型、房间状态和截止时间",
+      "pos": [
+        328,
+        321
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 14,
+          "end_line": 22
+        },
+        {
+          "path": "durable-objects/room-object.ts",
+          "line": 105,
+          "end_line": 108
+        }
+      ]
+    },
+    {
+      "id": "room",
+      "type": "backend",
+      "label": "通用 Room",
+      "sublabel": "入座、串行、去重、恢复",
+      "pos": [
+        980,
+        173
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "src/room/session.ts",
+          "line": 43,
+          "end_line": 79
+        },
+        {
+          "path": "src/room/session.ts",
+          "line": 83,
+          "end_line": 106
+        },
+        {
+          "path": "src/room/session.ts",
+          "line": 116,
+          "end_line": 140
+        }
+      ]
+    },
+    {
+      "id": "engine",
+      "type": "backend",
+      "label": "麻将引擎",
+      "sublabel": "玩法版本、开局条件、席位视图",
+      "pos": [
+        980,
+        330
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "src/room/engine.ts",
+          "line": 1,
+          "end_line": 12
+        },
+        {
+          "path": "src/mahjong/engine.ts",
+          "line": 1,
+          "end_line": 36
+        }
+      ]
+    },
+    {
+      "id": "registry",
+      "type": "backend",
+      "label": "麻将玩法注册表",
+      "sublabel": "当前版本、版本索引与公开目录",
+      "pos": [
+        980,
+        480
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "src/mahjong/rules/registry.ts",
+          "line": 1,
+          "end_line": 29
+        },
+        {
+          "path": "src/mahjong/rules/contract.ts",
+          "line": 8,
+          "end_line": 30
+        }
+      ]
+    },
+    {
+      "id": "basic",
+      "type": "backend",
+      "label": "基础麻将",
+      "sublabel": "独立行牌流程",
+      "pos": [
+        358,
+        635
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "src/mahjong/rules/basic.ts",
+          "line": 141,
+          "end_line": 194
+        }
+      ]
+    },
+    {
+      "id": "sichuan",
+      "type": "backend",
+      "label": "四川 · 血战到底",
+      "sublabel": "换三张、定缺、胡后续打",
+      "pos": [
+        670,
+        635
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "src/mahjong/rules/sichuan.ts",
+          "line": 72,
+          "end_line": 113
+        },
+        {
+          "path": "src/mahjong/rules/sichuan.ts",
+          "line": 134,
+          "end_line": 185
+        }
+      ]
+    },
+    {
+      "id": "guangdong",
+      "type": "backend",
+      "label": "广东 · 鸡平胡",
+      "sublabel": "无花，允许吃牌",
+      "pos": [
+        980,
+        635
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "src/mahjong/rules/guangdong.ts",
+          "line": 46,
+          "end_line": 68
+        }
+      ]
+    },
+    {
+      "id": "regional",
+      "type": "backend",
+      "label": "川粤共用行牌机制",
+      "sublabel": "摸打、抢牌窗口与杠",
+      "pos": [
+        825,
+        779
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "src/mahjong/rules/regional.ts",
+          "line": 99,
+          "end_line": 215
+        },
+        {
+          "path": "src/mahjong/rules/regional.ts",
+          "line": 216,
+          "end_line": 265
+        }
+      ]
+    },
+    {
+      "id": "games",
+      "type": "backend",
+      "label": "游戏注册与接入",
+      "sublabel": "选择引擎与消息协议",
+      "pos": [
+        650,
+        173
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "src/game-registry.ts",
+          "line": 1,
+          "end_line": 14
+        },
+        {
+          "path": "src/mahjong/room-adapter.ts",
+          "line": 1,
+          "end_line": 18
+        },
+        {
+          "path": "src/room/game-adapter.ts",
+          "line": 26,
+          "end_line": 50
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "type": "frontend",
+      "label": "首页游戏大厅",
+      "sublabel": "从游戏注册表列出入口",
+      "pos": [
+        32,
+        328
+      ],
+      "size": [
+        200,
+        68
+      ],
+      "sources": [
+        {
+          "path": "pages/index.tsx",
+          "line": 5,
+          "end_line": 23
+        },
+        {
+          "path": "pages/index.server.ts",
+          "line": 5,
+          "end_line": 11
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "http",
+      "from": "browser",
+      "to": "routes",
+      "label": "HTTP · 建房、加入、握手",
+      "variant": "emphasis"
+    },
+    {
+      "id": "forward",
+      "from": "routes",
+      "to": "object",
+      "label": "房间 ID",
+      "variant": "emphasis"
+    },
+    {
+      "id": "socket-in",
+      "from": "browser",
+      "to": "object",
+      "label": "WebSocket 动作",
+      "variant": "emphasis"
+    },
+    {
+      "id": "socket-out",
+      "from": "object",
+      "to": "browser",
+      "label": "席位快照",
+      "variant": "default"
+    },
+    {
+      "id": "dispatch",
+      "from": "object",
+      "to": "games",
+      "label": "按游戏类型选择",
+      "variant": "emphasis"
+    },
+    {
+      "id": "assemble",
+      "from": "games",
+      "to": "room",
+      "label": "装配房间会话",
+      "variant": "emphasis"
+    },
+    {
+      "id": "persist",
+      "from": "object",
+      "to": "store",
+      "label": "事务写入",
+      "variant": "default"
+    },
+    {
+      "id": "run",
+      "from": "room",
+      "to": "engine",
+      "label": "Engine 接口",
+      "variant": "emphasis"
+    },
+    {
+      "id": "lookup",
+      "from": "engine",
+      "to": "registry",
+      "label": "按 ID 和版本取规则",
+      "variant": "emphasis"
+    },
+    {
+      "id": "register-basic",
+      "from": "registry",
+      "to": "basic"
+    },
+    {
+      "id": "register-sichuan",
+      "from": "registry",
+      "to": "sichuan"
+    },
+    {
+      "id": "register-guangdong",
+      "from": "registry",
+      "to": "guangdong"
+    },
+    {
+      "id": "share-sichuan",
+      "from": "sichuan",
+      "to": "regional",
+      "label": "玩法策略"
+    },
+    {
+      "id": "share-guangdong",
+      "from": "guangdong",
+      "to": "regional",
+      "label": "玩法策略"
+    },
+    {
+      "id": "choose-game",
+      "from": "home",
+      "to": "browser",
+      "label": "选游戏"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "房间复用",
+      "items": [
+        "建房按请求选择游戏，由 Room.create() 检查持久化冲突。加入、消息和 Alarm 按已保存的游戏类型恢复会话。",
+        "接入层将 Room 实例与对应的消息解析函数组成会话。"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "同一份玩法目录",
+      "items": [
+        "首页从游戏注册表读游戏目录，麻将大厅从玩法注册表读三张卡片。",
+        "建房时由 RoomObject 选择游戏，麻将引擎校验玩法并确定版本。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "按席位渲染",
+      "items": [
+        "邀请链接直达加入表单。进入房间后，牌桌按席位快照渲染。",
+        "图以当前工作区源码为准。"
+      ]
+    }
+  ]
+}

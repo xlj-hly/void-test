@@ -6,6 +6,10 @@
     "dev": "vp dev",
     "build": "vp build",
     "preview": "vp preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vp test run",
+    "test:coverage": "vp test run --coverage",
+    "test:worker": "vp test run --config vitest.worker.config.ts",
     "postinstall": "void prepare"
   },
   "dependencies": {
@@ -14,10 +18,14 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "void": "1.10.0",
-    "vite": "catalog:",
+    "@types/node": "^26.6.7",
+    "@types/ws": "^8.18.2",
+    "@vitest/coverage-v8": "catalog:",
+    "@void/solid": "1.10.0",
     "typescript": "^7.0.2",
+    "vite": "catalog:",
     "vite-plus": "catalog:",
-    "@void/solid": "1.10.0"
+    "void": "1.10.0",
+    "ws": "^8.23.0"
   }
 }

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "3ffdb37c-0f1d-466a-9c3b-08f0834442cd",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\project\\void-test\\.archify\\architecture-mahjong-methods-20261126-181022\\candidate.json",
+  "output": "D:\\project\\void-test\\.archify\\architecture-mahjong-methods-20261126-181022\\mahjong-methods.html",
+  "specification": {
+    "sha256": "abc5cff833349a18fb470f106dbcd4fa5167158d2f8ceb579974671db3d5770c",
+    "bytes": 10636
+  },
+  "artifact": {
+    "sha256": "6b0a93b6f4bb653fb4a1d1461682845b99c2dcdce48771e6b6dec54b4929a4d5",
+    "bytes": 856848
+  }
+}

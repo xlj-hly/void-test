@@ -17,9 +17,12 @@
     "src",
     "pages",
     "routes",
+    "durable-objects",
     "middleware",
     "crons",
     "queues",
-    "db"
+    "db",
+    "tests",
+    "vitest*.config.ts"
   ]
 }

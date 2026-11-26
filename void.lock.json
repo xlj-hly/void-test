@@ -9,7 +9,23 @@
         "binding": "HYPERDRIVE",
         "id": "a762422f816e475490ef538f5eec3d82"
       }
+    ],
+    "durable_objects": {
+      "bindings": [
+        {
+          "name": "MAHJONG_ROOM",
+          "class_name": "MahjongRoomDurableObject"
+        }
+      ]
+    },
+    "migrations": [
+      {
+        "tag": "void-durable-mahjong-room-v1",
+        "new_sqlite_classes": [
+          "MahjongRoomDurableObject"
+        ]
+      }
     ]
   },
-  "text": "{\n  \"account_id\": \"6f0bba1c68fc5fe3e45dd351b8e8a1dd\",\n  \"name\": \"void-test\",\n  \"hyperdrive\": [\n    {\n      \"binding\": \"HYPERDRIVE\",\n      \"id\": \"a762422f816e475490ef538f5eec3d82\"\n    }\n  ]\n}\n"
+  "text": "{\n  \"account_id\": \"6f0bba1c68fc5fe3e45dd351b8e8a1dd\",\n  \"name\": \"void-test\",\n  \"hyperdrive\": [\n    {\n      \"binding\": \"HYPERDRIVE\",\n      \"id\": \"a762422f816e475490ef538f5eec3d82\"\n    }\n  ],\n  \"durable_objects\": {\n    \"bindings\": [\n      {\n        \"name\": \"MAHJONG_ROOM\",\n        \"class_name\": \"MahjongRoomDurableObject\"\n      }\n    ]\n  },\n  \"migrations\": [\n    {\n      \"tag\": \"void-durable-mahjong-room-v1\",\n      \"new_sqlite_classes\": [\n        \"MahjongRoomDurableObject\"\n      ]\n    }\n  ]\n}\n"
 }
