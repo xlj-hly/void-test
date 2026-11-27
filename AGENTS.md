@@ -5,3 +5,7 @@
 - Use Void's CLI and typed APIs. Before working with Void, read the relevant Markdown docs in `node_modules/void/docs/`; start with `guide/quickstart.md` for setup and `reference/cli.md` for commands.
 
 <!--/injected-by-void-->
+
+## Rules
+
+- Before running `git commit`, load and follow [pre-commit-doc-review](.agents/skills/pre-commit-doc-review/SKILL.md). Commit only after the review passes.

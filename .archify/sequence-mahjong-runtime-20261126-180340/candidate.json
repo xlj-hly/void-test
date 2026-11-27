@@ -9,7 +9,7 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "git@xh:xlj-hly/void-test.git",
-      "revision": "15b0df5c5e5c8d2eb72f3c420e6ad443d98aa221",
+      "revision": "e6b595bc6f2de75951c4ec80b11a7436d86ff821",
       "link_mode": "local-only"
     }
   },
@@ -22,18 +22,18 @@
       "sources": [
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 48,
-          "end_line": 87
+          "line": 66,
+          "end_line": 111
         },
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 90,
-          "end_line": 125
+          "line": 113,
+          "end_line": 155
         },
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 136,
-          "end_line": 187
+          "line": 166,
+          "end_line": 218
         }
       ]
     },
@@ -46,7 +46,7 @@
         {
           "path": "pages/index.server.ts",
           "line": 5,
-          "end_line": 11
+          "end_line": 9
         },
         {
           "path": "pages/games/mahjong.server.ts",
@@ -97,7 +97,7 @@
         {
           "path": "src/game-registry.ts",
           "line": 1,
-          "end_line": 14
+          "end_line": 17
         },
         {
           "path": "src/mahjong/room-adapter.ts",
@@ -621,7 +621,7 @@
       "y": 2831,
       "label": "send(socket, snapshot)",
       "variant": "return",
-      "note": "index.tsx 收到 snapshot 后更新 Board 的输入"
+      "note": "mahjong.tsx 收到 snapshot 后更新 Board 的输入"
     },
     {
       "id": "send-ack",

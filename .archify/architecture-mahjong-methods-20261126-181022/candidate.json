@@ -9,7 +9,7 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "git@xh:xlj-hly/void-test.git",
-      "revision": "15b0df5c5e5c8d2eb72f3c420e6ad443d98aa221",
+      "revision": "e6b595bc6f2de75951c4ec80b11a7436d86ff821",
       "link_mode": "local-only"
     }
   },
@@ -30,18 +30,18 @@
       "sources": [
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 48,
-          "end_line": 61
-        },
-        {
-          "path": "pages/games/mahjong.tsx",
-          "line": 90,
+          "line": 66,
           "end_line": 111
         },
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 136,
-          "end_line": 169
+          "line": 113,
+          "end_line": 142
+        },
+        {
+          "path": "pages/games/mahjong.tsx",
+          "line": 166,
+          "end_line": 200
         }
       ]
     },
@@ -124,7 +124,7 @@
         {
           "path": "src/game-registry.ts",
           "line": 1,
-          "end_line": 14
+          "end_line": 17
         },
         {
           "path": "src/room/game-adapter.ts",
@@ -154,13 +154,13 @@
         },
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 114,
-          "end_line": 125
+          "line": 144,
+          "end_line": 155
         },
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 179,
-          "end_line": 187
+          "line": 209,
+          "end_line": 217
         }
       ]
     },
@@ -248,13 +248,13 @@
       "sources": [
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 61,
-          "end_line": 71
+          "line": 79,
+          "end_line": 94
         },
         {
           "path": "pages/games/mahjong.tsx",
-          "line": 179,
-          "end_line": 187
+          "line": 209,
+          "end_line": 217
         }
       ]
     },

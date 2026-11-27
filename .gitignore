@@ -10,3 +10,7 @@ coverage
 *.tsbuildinfo
 .DS_Store
 .vitest/
+
+# Archify delivery and verification records (keep local)
+/.archify/**/*.delivery.json
+/.archify/**/organization-verified/
