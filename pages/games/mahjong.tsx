@@ -1,4 +1,5 @@
-import { createEffect, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js';
+import { Link, useNavigation, useRouter } from '@void/solid';
+import { createEffect, createMemo, createSignal, For, on, onCleanup, Show } from 'solid-js';
 import { fetch as apiFetch, FetchError } from 'void/client';
 import { Board } from '../../src/mahjong/client/board';
 import { membershipSchema, type Action, type ClientMessage, type Membership, type RoomView, type ServerMessage } from '../../src/mahjong/protocol/messages';
@@ -28,10 +29,12 @@ function readMembership(roomId: string) {
 }
 
 export default function MahjongPage(props: Props) {
+  const router = useRouter();
+  const navigation = useNavigation();
   const [name, setName] = createSignal('');
   const [roomCode, setRoomCode] = createSignal(props.roomCode);
-  const [invited, setInvited] = createSignal(Boolean(props.roomCode));
-  const selected = () => props.rulesets.find(({ id }) => id === props.selectedRulesetId);
+  const selectedRulesetId = createMemo(() => props.selectedRulesetId);
+  const selected = () => props.rulesets.find(({ id }) => id === selectedRulesetId());
   const [membership, setMembership] = createSignal<Membership>();
   const [view, setView] = createSignal<RoomView>();
   const [connection, setConnection] = createSignal<'connecting' | 'ready' | 'offline'>('connecting');
@@ -40,21 +43,25 @@ export default function MahjongPage(props: Props) {
   const [error, setError] = createSignal('');
   const [copied, setCopied] = createSignal(false);
   let socket: WebSocket | undefined;
+  let mounted = true;
+  onCleanup(() => { mounted = false; });
 
-  onMount(() => {
-    if (props.roomCode) setMembership(readMembership(props.roomCode));
-  });
-
-  function forgetSeat(roomId: string) {
-    storeMembership(roomId);
-    setRoomCode(roomId);
-    setInvited(true);
-    setMembership(undefined);
+  function showSeat(session?: Membership) {
     setView(undefined);
     setPending(undefined);
     setError('');
     setCopied(false);
+    setMembership(session);
   }
+
+  createEffect(on(selectedRulesetId, () => setName(''), { defer: true }));
+
+  createEffect(on(() => props.roomCode, (roomId) => {
+    setRoomCode(roomId);
+    if (membership()?.roomId !== roomId) {
+      showSeat(roomId ? readMembership(roomId) : undefined);
+    }
+  }));
 
   createEffect(on(membership, (session) => {
     if (!session) return;
@@ -90,7 +97,8 @@ export default function MahjongPage(props: Props) {
         setPending(undefined);
         setConnection('offline');
         if (event.code === 1008) {
-          forgetSeat(roomId);
+          storeMembership(roomId);
+          showSeat();
           setError('座位凭证已失效，请重新加入');
           return;
         }
@@ -108,18 +116,25 @@ export default function MahjongPage(props: Props) {
     if (join ? roomCode().length !== roomIdLength : !rulesetId) return;
     setBusy(true);
     setError('');
+    const entryUrl = router.url.href;
     try {
       const body = { name: name().trim() };
       const roomId = roomCode();
       const response: Membership = join
         ? readMembership(roomId) ?? await apiFetch('/api/rooms/[roomId]/join', { method: 'POST', params: { roomId }, body })
         : await apiFetch('/api/rooms', { method: 'POST', body: { ...body, gameType: props.gameType, rulesetId } });
-      const url = new URL(location.href);
-      url.searchParams.set('room', response.roomId);
-      history.replaceState(null, '', url);
-      setMembership(response);
       storeMembership(response.roomId, response);
+      if (!mounted || router.url.href !== entryUrl || navigation.state !== 'idle') return;
+      const url = new URL(entryUrl);
+      url.searchParams.set('room', response.roomId);
+      if (url.href !== entryUrl) {
+        await router.visit(url, { replace: true, preserveState: true, preserveScroll: true });
+      }
+      if (mounted && props.roomCode === response.roomId && membership()?.token !== response.token) {
+        showSeat(response);
+      }
     } catch (cause) {
+      if (!mounted || router.url.href !== entryUrl) return;
       if (cause instanceof FetchError && cause.status === 404) setError('找不到这个房间');
       else if (cause instanceof FetchError && cause.status === 409) setError('房间已满或已经开局');
       else setError('暂时无法进入，请检查房间码或重试');
@@ -150,25 +165,25 @@ export default function MahjongPage(props: Props) {
 
   return (
     <main class="hall">
-      <header class="masthead"><a class="brand" href="/">四方牌桌</a><span>麻将大厅</span></header>
+      <header class="masthead"><Link class="brand" href="/">四方牌桌</Link><span>麻将大厅</span></header>
       <Show when={membership()} fallback={
-        <Show when={selected() || invited()} fallback={
+        <Show when={selected() || props.roomCode} fallback={
           <section class="catalog">
-            <a class="back-link" href="/">‹ 游戏大厅</a>
+            <Link class="back-link" href="/">‹ 游戏大厅</Link>
             <h1>选择玩法</h1>
             <ul class="catalog-grid">
               <For each={props.rulesets}>{(rule) => <li>
-                <a class="catalog-card ruleset-card" href={`/games/mahjong?ruleset=${encodeURIComponent(rule.id)}`}>
+                <Link class="catalog-card ruleset-card" href="/games/mahjong" data={{ ruleset: rule.id }}>
                   <span class="tile catalog-tile" aria-hidden="true">{rulesetTiles[rule.id] ?? '中'}</span>
                   <strong>{rule.name}</strong>
                   <small>{rule.seats} 人桌</small>
-                </a>
+                </Link>
               </li>}</For>
             </ul>
           </section>
         }>
           <section class="lobby room-entry">
-            <a class="back-link" href="/games/mahjong">‹ 选择玩法</a>
+            <Link class="back-link" href="/games/mahjong">‹ 选择玩法</Link>
             <h1>{selected()?.name ?? '加入好友房'}</h1>
             <form onSubmit={(event) => { event.preventDefault(); void enter(true); }}>
               <label>昵称<input maxlength={16} value={name()} onInput={(event) => setName(event.currentTarget.value)} autocomplete="nickname" required /></label>
@@ -188,7 +203,7 @@ export default function MahjongPage(props: Props) {
             <Show when={view()}>{(room) => <span class="label">{props.rulesets.find(({ id }) => id === room().rulesetId)?.name ?? room().rulesetId}</span>}</Show>
           </div>
           <div class="controls"><button class="quiet" onClick={() => void share()}>{copied() ? '已复制' : '复制邀请链接'}</button>
-            <a class="back-link" href="/games/mahjong">返回大厅</a></div>
+            <Link class="back-link" href="/games/mahjong">返回大厅</Link></div>
         </section>
         <Show when={connection() !== 'ready'}><p class="status" role="status">{connection() === 'offline' ? '连接中断，正在重连' : '正在连接牌桌'}</p></Show>
         <Show when={view()}>
