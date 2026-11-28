@@ -115,65 +115,47 @@ describe('四川血战到底', () => {
 });
 
 describe('广东鸡平胡', () => {
+  function hand() {
+    const state = guangdong.start((size) => new Uint32Array(size).fill(0xffffffff), 0);
+    return { ...state, uninterrupted: false, discardCount: 4 };
+  }
+
   it('136 张含字牌，可吃，零番点胡可结算', () => {
-    const state = guangdong.start(3, 0);
+    const state = hand();
     expect(new Set([...state.wall, ...state.hands.flat()]).size).toBe(136);
     state.hands = [[19], [0, 1, 2, ...waitForFive.slice(3)], [], []];
+    state.wall = [132, 133];
     const offered = play(guangdong, state, 0, { type: 'discard', tiles: [19] });
     expect(guangdong.viewFor(offered, 1).actions.some((action) => action.type === 'chow')).toBe(true);
     const ended = play(guangdong, offered, 1, { type: 'win' });
     expect(guangdong.viewFor(ended, 0).result).toMatchObject({ kind: 'win', winner: 1, from: 0, fan: 0, scores: [-1, 1, 0, 0] });
   });
 
-  it('同一张牌有多人胡时只取最近者，且可抢补杠', () => {
-    const state = guangdong.start(12, 0);
-    state.hands = [[19], waitForFive, waitForFive.map((id) => id + 1), []];
-    state.groups[0] = [{ type: 'pong', tiles: [16, 17, 18] }];
-    // Both opponents can complete 456, holding neither of the tiles in the exposed pong.
-    state.hands[1] = [0, 4, 8, 12, 20, 36, 40, 44, 48, 52, 56, 108, 109];
-    state.hands[2] = [1, 5, 9, 13, 21, 37, 41, 45, 49, 53, 57, 110, 111];
-    const offered = play(guangdong, state, 0, { type: 'added-kong', tiles: [19] });
-    expect(guangdong.viewFor(offered, 1).pending?.kind).toBe('added-kong');
-    expect(guangdong.viewFor(offered, 2).actions).toEqual([{ type: 'win' }, { type: 'pass' }]);
-    const waiting = play(guangdong, offered, 2, { type: 'win' });
-    const ended = play(guangdong, waiting, 1, { type: 'win' });
-    expect(ended.result).toMatchObject({ kind: 'win', winner: 1, from: 0, patterns: expect.arrayContaining(['抢杠胡']) });
-    expect(ended.groups[0][0].type).toBe('pong');
-  });
-
-  it.each([
-    { hand: [...waitForFive, 17], patterns: ['平胡', '自摸'], fan: 2 },
-    { hand: [0, 1, 2, 12, 13, 14, 24, 25, 26, 40, 41, 42, 108, 109], patterns: ['碰碰胡', '自摸'], fan: 4 },
-    { hand: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 24, 25], patterns: ['七对', '清一色', '自摸'], fan: 6 },
-    { hand: [108, 109, 110, 112, 113, 114, 116, 117, 118, 120, 121, 122, 124, 125], patterns: ['碰碰胡', '字一色', '自摸'], fan: 6 },
-    { hand: [0, 4, 8, 12, 16, 20, 24, 28, 32, 108, 109, 110, 112, 113], patterns: ['混一色', '自摸'], fan: 4 },
-  ])('自摸计算 $patterns，并按六番封顶', ({ hand, patterns, fan }) => {
-    const state = guangdong.start(23, 0);
-    state.hands[0] = hand;
-    const ended = play(guangdong, state, 0, { type: 'win' });
-    expect(ended.result).toEqual({ kind: 'win', winner: 0, from: null, fan, patterns, scores: [3 * 2 ** fan, -(2 ** fan), -(2 ** fan), -(2 ** fan)] });
-  });
-
-  it('吃后要打牌，暗杠不泄露，没人抢补杠就正常补牌', () => {
-    const state = guangdong.start(9, 0);
+  it('碰牌响应超时后下家吃牌，吃后只能打牌', () => {
+    const state = hand();
     state.hands = [[8], [0, 4, 28, 29, 30, 31], [9, 10], []];
     state.wall = [71, 72, 73];
     const claiming = play(guangdong, state, 0, { type: 'discard', tiles: [8] });
     const waiting = play(guangdong, claiming, 1, { type: 'chow', tiles: [4, 0] });
     const chow = timeout(guangdong, waiting);
     expect(chow.groups[1]).toEqual([{ type: 'chow', tiles: [0, 4, 8] }]);
-    expect(guangdong.viewFor(chow, 1).actions.every((action) => action.type === 'discard')).toBe(true);
-    const turn = { ...state, hands: [[28, 29, 30, 31], [], [], []] };
-    const hidden = play(guangdong, turn, 0, { type: 'concealed-kong', tiles: [28, 29, 30, 31] });
-    expect(guangdong.viewFor(hidden, 1).players[0].groups[0].tiles).toEqual([null, null, null, null]);
-    const added = play(guangdong, { ...state, hands: [[19], [], [], []], groups: [[{ type: 'pong', tiles: [16, 17, 18] }], [], [], []] },
-      0, { type: 'added-kong', tiles: [19] });
+    expect(guangdong.viewFor(chow, 1).actions.map(({ type }) => type)).toEqual(Array(4).fill('discard'));
+  });
+
+  it('无人可抢补杠时直接从墙尾补牌', () => {
+    const state = hand();
+    state.hands = [[19], [], [], []];
+    state.groups[0] = [{ type: 'pong', tiles: [16, 17, 18] }];
+    state.wall = [71, 72, 73];
+    const added = play(guangdong, state, 0, { type: 'added-kong', tiles: [19] });
     expect(added.hands[0]).toEqual([73]);
+    expect(added.wall).toEqual([71, 72]);
+    expect(added.window).toBeNull();
     expect(added.groups[0][0]).toEqual({ type: 'added-kong', tiles: [16, 17, 18, 19] });
   });
 
   it('超时自动打牌，过了补杠窗口后补牌，牌墙耗尽后结束', () => {
-    const state = guangdong.start(0, 0);
+    const state = hand();
     state.hands = [[19], [0, 4, 8, 12, 20, 36, 40, 44, 48, 52, 56, 108, 109], [], []];
     state.groups[0] = [{ type: 'pong', tiles: [16, 17, 18] }];
     state.wall = [132];

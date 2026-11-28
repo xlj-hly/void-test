@@ -16,6 +16,7 @@ export const actionSchema = z.discriminatedUnion('type', [
   z.strictObject({ type: z.literal('choose-suit'), suit }),
   z.strictObject({ type: z.literal('win') }),
   z.strictObject({ type: z.literal('pass') }),
+  z.strictObject({ type: z.literal('next-hand') }),
 ]);
 export type Action = z.infer<typeof actionSchema>;
 export type Suit = z.infer<typeof suit>;
@@ -32,6 +33,7 @@ export type Group = { type: 'chow' | 'pong' | 'kong' | 'concealed-kong' | 'added
 export type Win = { winner: number; from: number | null; fan: number; patterns: string[] };
 export type Result = { kind: 'draw'; scores: number[] }
   | { kind: 'win'; winner: number; from: number | null; scores: number[]; fan?: number; patterns?: string[] }
+  | { kind: 'multi-win'; wins: Win[]; scores: number[] }
   | { kind: 'blood'; reason: 'three-winners' | 'wall-empty'; wins: Win[]; scores: number[] };
 export type TableEvent = { type: 'discard'; seat: number; tile: number }
   | { type: 'draw' | 'claim' | 'settlement' | 'win'; seat: number };
@@ -45,6 +47,7 @@ export type TableView = {
   actions: Action[];
   pending?: { from: number; tile: number; kind?: 'added-kong' };
   exchange?: { groups: number[][] };
+  round?: { dealer: number; wind: number; hand: number; complete: boolean };
   scores?: number[];
   result: Result | null;
 };

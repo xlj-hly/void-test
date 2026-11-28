@@ -97,6 +97,8 @@ sequenceDiagram
 4. 成功更新由 `Room` 先持久化，再广播并确认命令。对象在同一事务内保存房间记录并设置或移除 Alarm。操作到期时，Alarm 唤醒 `Room`，由引擎把超时交给规则。
 5. `commandId` 用于同座位命令去重，`decisionId` 由麻将规则校验操作窗口，`revision` 供浏览器丢弃旧快照。规则按席位生成手牌、暗杠和可用动作的视图，底层牌局状态只保存在房间对象中。
 
+广东鸡平胡沿用既有玩法 ID 和版本，庄家、风圈和累计积分保存在玩法状态中。每局结算后，由玩法决定是否为房主开放 `next-hand` 操作。引擎给续局提供新的洗牌输入，操作窗口编号在整场内递增。多人胡牌用同一条结算快照携带全部赢家。恢复既有单副牌局时保留牌张和已完成的结算，原先未持久化的过胡、包牌等记录从恢复时开始计算。
+
 当前房间记录包含成员、最近的命令 ID、引擎配置和序列化游戏状态。同一个存储事务保存游戏类型，DO 唤醒时据此恢复对应的引擎和协议。此前没有游戏类型的房间按麻将恢复。Void 使用持久资源名 `mahjong-room`，已保存的房间沿用同一个 DO 绑定和 Cloudflare 迁移记录。麻将读档按 `id + version` 精确命中，缺失版本时报错。[Void 资源锁文件](../../void.lock.json)
 
 ## 页面与接口
@@ -121,4 +123,5 @@ sequenceDiagram
 
 - 麻将和计数游戏验证对不同引擎和协议的接入。[游戏接入测试](../../tests/room-game.test.ts)
 - 通用房间测试覆盖持久化、重连、去重与超时，DO 测试覆盖持久化会话恢复等对象行为。[通用房间测试](../../tests/room.test.ts) · [房间对象测试](../../tests/room-object.test.ts)
-- 本地 Void Worker 测试覆盖大厅目录、HTTP、WebSocket、三种玩法和 Alarm。[Worker 集成测试](../../tests/worker/room.test.ts)
+- 广东鸡平胡测试覆盖番型、结算、动作优先级、过胡、包牌和轮庄。[广东鸡平胡测试](../../tests/guangdong.test.ts)
+- 本地 Void Worker 测试覆盖大厅目录、HTTP、WebSocket、三种玩法、广东续局和 Alarm。[Worker 集成测试](../../tests/worker/room.test.ts)

@@ -194,12 +194,21 @@ describe('真实 Void Worker 与四人 WebSocket', () => {
     expect(after.view.table?.decisionId).toBeGreaterThan(before.table!.decisionId);
   });
 
-  it.each(['sichuan', 'guangdong'])('跨 HTTP、WebSocket 与恢复打完 %s 一局', async (rulesetId) => {
+  it.each(['sichuan', 'guangdong'])('跨 HTTP、WebSocket 与恢复验证 %s 对局', async (rulesetId) => {
     expect(await post('/api/rooms', '未知玩法', 'unknown')).toHaveProperty('status', 400);
     const { peers, sessions } = await fullRoom(rulesetId);
     let views = await start(peers);
     expect(views.map((view) => view.rulesetId)).toEqual(Array(4).fill(rulesetId));
+    const isGuangdong = rulesetId === 'guangdong';
+    expect(views.map((view) => view.rulesetVersion)).toEqual(Array(4).fill(1));
     expect(views[0].table?.wallRemaining).toBe(rulesetId === 'sichuan' ? 55 : 83);
+    const initialDealer = views[0].table!.turn;
+    if (isGuangdong) {
+      for (const [seat, view] of views.entries()) {
+        expect(view.table?.round).toEqual({ dealer: initialDealer, wind: 0, hand: 1, complete: false });
+        expect(view.table?.players[seat].hand).toHaveLength(seat === initialDealer ? 14 : 13);
+      }
+    }
     if (rulesetId === 'sichuan') {
       expect(views[0].table?.phase).toBe('exchange');
       const window = views[0].table!.decisionId;
@@ -225,7 +234,8 @@ describe('真实 Void Worker 与四人 WebSocket', () => {
       const seat = views.findIndex((view) => view.table!.actions.length);
       expect(seat).toBeGreaterThanOrEqual(0);
       const actions = views[seat].table!.actions;
-      const action = actions.find(({ type }) => type === 'win') ?? actions.find(({ type }) => type === 'discard' || type === 'pass');
+      const win = isGuangdong ? undefined : actions.find(({ type }) => type === 'win');
+      const action = win ?? actions.find(({ type }) => type === 'discard' || type === 'pass');
       expect(action).toBeDefined();
       views = await act(peers, views, seat, action!);
     }
@@ -234,5 +244,25 @@ describe('真实 Void Worker 与四人 WebSocket', () => {
     expect(result?.scores.reduce((sum, score) => sum + score, 0)).toBe(0);
     expect(views.every((view) => JSON.stringify(view.table?.result) === JSON.stringify(result))).toBe(true);
     expect((await resume(sessions[1])).view.table?.result).toEqual(result);
+    if (isGuangdong) {
+      expect(result).toEqual({ kind: 'draw', scores: [0, 0, 0, 0] });
+      const ended = views[0].table!;
+      const nextHand = { type: 'next-hand' } as const;
+      expect(ended.actions).toContainEqual(nextHand);
+      expect(views[1].table!.actions).toEqual([]);
+      const unauthorized = { type: 'act', action: nextHand, decisionId: ended.decisionId, commandId: randomUUID() } as const;
+      peers[1].client.send(unauthorized);
+      expect(await peers[1].client.reply(unauthorized.commandId)).toMatchObject({ type: 'error' });
+
+      views = await act(peers, views, 0, nextHand);
+      const next = views[0].table!;
+      expect(next).toMatchObject({ phase: 'turn', turn: initialDealer, wallRemaining: 83, result: null,
+        round: { dealer: initialDealer, wind: 0, hand: 1, complete: false }, scores: [0, 0, 0, 0] });
+      expect(next.decisionId).toBeGreaterThan(ended.decisionId);
+      const stale = { ...unauthorized, commandId: randomUUID() };
+      peers[0].client.send(stale);
+      expect(await peers[0].client.reply(stale.commandId)).toMatchObject({ type: 'error' });
+      expect((await resume(sessions[0])).view.table).toEqual(next);
+    }
   });
 });

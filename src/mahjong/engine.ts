@@ -25,7 +25,7 @@ export function createMahjongEngine(
       return { ok: true, state: rules.start(shuffleInput(), now), events: [] };
     },
     apply: (configuration, state, decision, now) => resolve(configuration).apply(
-      state, 'move' in decision ? { seat: decision.seat, ...decision.move } : decision, now,
+      state, 'move' in decision ? { seat: decision.seat, ...decision.move } : decision, now, shuffleInput,
     ),
     deadline: (configuration, state) => resolve(configuration).deadline(state),
     viewFor(configuration, game, seat) {

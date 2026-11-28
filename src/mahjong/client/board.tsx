@@ -4,7 +4,7 @@ import type { Action, RoomView } from '../protocol/messages';
 const winds = ['东', '南', '西', '北'];
 const honors = ['東', '南', '西', '北', '中', '發', '白'];
 const kinds = ['萬', '条', '筒'];
-type ButtonAction = Exclude<Action, { type: 'discard' | 'exchange' }>;
+type ButtonAction = Exclude<Action, { type: 'discard' | 'exchange' | 'next-hand' }>;
 const actionNames: Record<ButtonAction['type'], string> = {
   chow: '吃', pong: '碰', kong: '明杠', 'concealed-kong': '暗杠', 'added-kong': '补杠',
   'choose-suit': '定缺', win: '胡', pass: '过',
@@ -24,10 +24,13 @@ export function Board(props: { room: RoomView; enabled: boolean; onAction(action
   const [selected, setSelected] = createSignal<number[]>([]);
   onMount(() => { const timer = setInterval(() => setNow(Date.now()), 250); onCleanup(() => clearInterval(timer)); });
   const table = () => props.room.table!;
+  const round = () => table().round;
   createEffect(on(() => table().deadline, () => setNow(Date.now())));
   createEffect(on(() => table().decisionId, () => setSelected([])));
   const player = () => table().players[props.room.seat];
-  const actions = () => table().actions.filter((action): action is ButtonAction => action.type !== 'discard' && action.type !== 'exchange');
+  const actions = () => table().actions.filter((action): action is ButtonAction =>
+    action.type !== 'discard' && action.type !== 'exchange' && action.type !== 'next-hand');
+  const nextHand = () => table().actions.find((action) => action.type === 'next-hand');
   const discard = (id: number) => table().actions.find((action) => action.type === 'discard' && action.tiles[0] === id);
   const seconds = () => Math.max(0, Math.ceil(((table().deadline ?? now()) - now()) / 1000));
   const selectable = (id: number) => table().exchange?.groups.some((group) => group.includes(id)
@@ -42,7 +45,7 @@ export function Board(props: { room: RoomView; enabled: boolean; onAction(action
   }
   const phaseLabel = () => {
     switch (table().phase) {
-      case 'ended': return '本局结束';
+      case 'ended': return round()?.complete ? '对局结束' : '本局结束';
       case 'exchange': return table().exchange ? '换三张' : '等待其他玩家换牌';
       case 'choose-suit': return actions().length ? '定缺' : '等待其他玩家定缺';
       case 'claim': return '等待响应';
@@ -52,32 +55,35 @@ export function Board(props: { room: RoomView; enabled: boolean; onAction(action
   const winners = () => {
     const result = table().result;
     if (result?.kind === 'win') return [result];
-    return result?.kind === 'blood' ? result.wins : [];
+    return result?.kind === 'blood' || result?.kind === 'multi-win' ? result.wins : [];
   };
   const settlementLabel = () => {
     const result = table().result;
     if (result?.kind === 'draw') return '流局';
     if (result?.kind === 'blood') return result.reason === 'wall-empty' ? '牌墙耗尽 · 结算' : '三家已胡 · 结算';
+    if (result?.kind === 'multi-win') return '多家胡牌 · 结算';
     return '和牌结算';
   };
 
   return <section class="play" aria-label="麻将牌桌">
     <div class="table-status" role="status">
       <span>牌墙 {table().wallRemaining}</span>
-      <strong>{phaseLabel()}</strong>
+      <strong><Show when={round()}>{(current) => <>{winds[current().wind]}圈第 {current().hand} 局 · </>}</Show>{phaseLabel()}</strong>
       <span>{table().deadline === null ? '—' : `${seconds()} 秒`}</span>
     </div>
     <div class="felt">
       <For each={[2, 3, 1, 0]}>{(offset) => {
         const seat = () => (props.room.seat + offset) % props.room.capacity;
         const occupant = () => table().players[seat()];
-        return <section class={`position position-${offset}`} aria-label={`${winds[seat()]}位`}>
+        const wind = () => winds[(seat() - (round()?.dealer ?? 0) + winds.length) % winds.length];
+        return <section class={`position position-${offset}`} aria-label={`${wind()}位`}>
           <div class="seat-label" classList={{ active: table().phase === 'turn' && table().turn === seat() }}>
-            <span>{winds[seat()]}</span><strong>{props.room.seats[seat()].name}</strong>
+            <span>{wind()}</span><strong>{props.room.seats[seat()].name}</strong>
+            <Show when={round()?.dealer === seat()}><small>庄</small></Show>
             <Show when={offset !== 0}><small>{occupant().handCount} 张</small></Show>
             <Show when={occupant().missingSuit !== undefined}><small>缺{kinds[occupant().missingSuit!]}</small></Show>
             <Show when={occupant().won}><small>已胡</small></Show>
-            <Show when={table().scores}><small>{table().scores![seat()]} 分</small></Show>
+            <Show when={table().scores}><small>{round() ? '总分 ' : ''}{table().scores![seat()]} 分</small></Show>
           </div>
           <div class="river"><For each={occupant().river}>{(id) => <Tile id={id} />}</For></div>
           <div class="groups"><For each={occupant().groups}>{(group) => <span><For each={group.tiles}>{(id) => <Tile id={id} />}</For></span>}</For></div>
@@ -103,10 +109,13 @@ export function Board(props: { room: RoomView; enabled: boolean; onAction(action
       确认换牌 {selected().length} / 3
     </button></div></Show>
     <Show when={table().result}>{(result) => <section class="settlement"><h2>{settlementLabel()}</h2>
-      <For each={winners()}>{(win) => <p>{props.room.seats[win.winner].name} {win.from === null ? '自摸' : '点胡'}
+      <For each={winners()}>{(win) => <p>{props.room.seats[win.winner].name} {win.from === null ? '自摸' : win.patterns?.includes('抢杠胡') ? '抢杠' : '点胡'}
           <Show when={win.fan !== undefined}> · {win.fan} 番</Show><Show when={win.patterns?.length}> · {win.patterns!.join('、')}</Show>
       </p>}</For>
       <ul><For each={result().scores}>{(score, index) => <li><span>{props.room.seats[index()].name}</span><strong>{score > 0 ? `+${score}` : score}</strong></li>}</For></ul>
+      <Show when={nextHand()}>{(action) => <div class="actions">
+        <button disabled={!props.enabled} onClick={() => props.onAction(action())}>开始下一局</button>
+      </div>}</Show>
     </section>}</Show>
   </section>;
 }

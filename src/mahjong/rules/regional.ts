@@ -34,7 +34,10 @@ export type PlayPolicy<S extends PlayState> = {
   wallEmpty(state: S, events: TableEvent[]): void;
   kong?(state: S, seat: number, from: number | null, kind: Kong): void;
   passed?(state: S, win: WinContext): void;
-  draw?(state: S, seat: number): void;
+  draw?(state: S, seat: number, tile: number, supplement: boolean): void;
+  discard?(state: S): void;
+  meld?(state: S, seat: number, from: number, tile: number): void;
+  mayClaimMeld?(state: S): boolean;
 };
 
 export function deal(random: ShuffleInput, now: number, count: number): PlayState {
@@ -132,7 +135,7 @@ export function createPlay<S extends PlayState>(policy: PlayPolicy<S>) {
     const tile = supplement ? state.wall.pop() : state.wall.shift();
     if (tile === undefined) return policy.wallEmpty(state, events);
     state.hands[seat].push(tile);
-    policy.draw?.(state, seat);
+    policy.draw?.(state, seat, tile, supplement);
     turn(state, seat, now, true, supplement);
     events.push({ type: 'draw', seat });
   }
@@ -142,12 +145,12 @@ export function createPlay<S extends PlayState>(policy: PlayPolicy<S>) {
     draw(state, next, now, events);
   }
 
-  function respond(state: S, from: number, tile: number, kind: Window['kind'], now: number) {
+  function claimsFor(state: S, from: number, tile: number, kind: Window['kind']) {
     const rob = kind === 'added-kong';
-    const claims = ordered(state, from).flatMap((seat): Claim[] => {
+    return ordered(state, from).flatMap((seat): Claim[] => {
       const options: Action[] = [];
       if (policy.mayWin(state, { seat, from, tile, rob })) options.push({ type: 'win' });
-      if (!rob && policy.mayMeld(state, seat, tile)) {
+      if (!rob && (policy.mayClaimMeld?.(state) ?? true) && policy.mayMeld(state, seat, tile)) {
         const hand = state.hands[seat];
         const copies = matching(hand, tile).length;
         if (copies >= 2) options.push({ type: 'pong' });
@@ -156,6 +159,24 @@ export function createPlay<S extends PlayState>(policy: PlayPolicy<S>) {
       }
       return options.length ? [{ seat, actions: [...options, { type: 'pass' }] }] : [];
     });
+  }
+
+  function refreshWindow(state: S): Window | null {
+    const window = state.window;
+    if (!window) return null;
+    const claims = claimsFor(state, window.from, window.tile, window.kind);
+    for (const claim of claims) {
+      const previous = window.claims.find(({ seat }) => seat === claim.seat);
+      const reply = previous?.reply;
+      const newWin = claim.actions.some(({ type }) => type === 'win')
+        && !previous?.actions.some(({ type }) => type === 'win');
+      if (reply && !newWin && claim.actions.some((action) => matches(action, reply))) claim.reply = reply;
+    }
+    return { ...window, claims };
+  }
+
+  function respond(state: S, from: number, tile: number, kind: Window['kind'], now: number) {
+    const claims = claimsFor(state, from, tile, kind);
     if (claims.length) {
       state.window = { kind, from, tile, claims };
       advanceWindow(state, now, CLAIM_MS);
@@ -201,6 +222,7 @@ export function createPlay<S extends PlayState>(policy: PlayPolicy<S>) {
     state.rivers[from].pop();
     state.hands[seat] = removeTiles(state.hands[seat], used);
     state.groups[seat].push({ type: action.type, tiles: [tile, ...used].sort((a, b) => a - b) });
+    policy.meld?.(state, seat, from, tile);
     if (action.type === 'kong') return completeKong(state, seat, from, action.type, now, events);
     events.push({ type: 'claim', seat });
     turn(state, seat, now, false);
@@ -209,6 +231,7 @@ export function createPlay<S extends PlayState>(policy: PlayPolicy<S>) {
   function discard(state: S, seat: number, tile: number, now: number, events: TableEvent[]) {
     state.hands[seat] = removeTiles(state.hands[seat], [tile]);
     state.rivers[seat].push(tile);
+    policy.discard?.(state);
     events.push({ type: 'discard', seat, tile });
     if (!respond(state, seat, tile, 'discard', now)) drawNext(state, seat, now, events);
   }
@@ -260,5 +283,5 @@ export function createPlay<S extends PlayState>(policy: PlayPolicy<S>) {
     };
   }
 
-  return { apply, viewFor };
+  return { apply, viewFor, refreshWindow };
 }

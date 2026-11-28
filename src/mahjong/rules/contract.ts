@@ -14,7 +14,7 @@ export interface RulesetMetadata {
 
 export interface Rules<State> extends RulesetMetadata {
   start(random: ShuffleInput, now: number): State;
-  apply(state: State, decision: Decision, now: number): RuleUpdate<State>;
+  apply(state: State, decision: Decision, now: number, shuffleInput?: () => ShuffleInput): RuleUpdate<State>;
   viewFor(state: State, seat: number): TableView;
   deadline(state: State): number | null;
 }
@@ -23,7 +23,7 @@ export function register<State>(rules: Rules<State>): Rules<unknown> {
   // The engine resolves the saved ruleset version before passing state to its implementation.
   return {
     ...rules,
-    apply: (state, decision, now) => rules.apply(state as State, decision, now),
+    apply: (state, decision, now, shuffleInput) => rules.apply(state as State, decision, now, shuffleInput),
     viewFor: (state, seat) => rules.viewFor(state as State, seat),
     deadline: (state) => rules.deadline(state as State),
   };
