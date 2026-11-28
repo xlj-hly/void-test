@@ -9,3 +9,5 @@
 ## Rules
 
 - Before running `git commit`, load and follow [pre-commit-doc-review](.agents/skills/pre-commit-doc-review/SKILL.md). Commit only after the review passes.
+
+- Project documentation, architecture designs, and directory structures are evolving conventions, not fixed constraints. When requirements, implementations, or tool versions change, adjust these conventions as needed and update affected documentation and path references to reflect the current state. For example, if an archify upgrade changes the output directory for architecture artifacts, update the corresponding directory descriptions and paths in the documentation.
